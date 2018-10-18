@@ -11,6 +11,7 @@ namespace twozerofoureight
         protected int boardSize; // default is 4
         protected int[,] board;
         protected Random rand;
+        public int score = 0;
 
         public TwoZeroFourEightModel() : this(4)
         {
@@ -22,9 +23,11 @@ namespace twozerofoureight
             boardSize = size;
             board = new int[boardSize, boardSize];
             var range = Enumerable.Range(0, boardSize);
-            foreach(int i in range) {
-                foreach(int j in range) {
-                    board[i,j] = 0;
+            foreach (int i in range)
+            {
+                foreach (int j in range)
+                {
+                    board[i, j] = 0;
                 }
             }
             rand = new Random();
@@ -39,7 +42,7 @@ namespace twozerofoureight
 
         private int[,] Random(int[,] input)
         {
-            while (true)
+            while (!isBoardFull()) //while (!isBoardFull)
             {
                 int x = rand.Next(boardSize);
                 int y = rand.Next(boardSize);
@@ -50,6 +53,71 @@ namespace twozerofoureight
                 }
             }
             return input;
+        }
+
+        private bool isBoardFull()
+        {
+            int count = 0;
+            foreach (int space in board)
+            {
+                if (space > 0)
+                {
+                    count++;
+                }
+            }
+
+            if (count >= 16)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public bool isNotPlayable()
+        {
+            //count only current space is not equal to the adjacent space.
+            int count = 0;
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 4; j++)
+                {
+                    if (j != 3)
+                    {
+                        if (board[i, j] != board[i, j + 1] && board[i, j] != board[i + 1, j])
+                        {
+                            count++;
+                        }
+                    }
+                    else
+                    {
+                        if (board[i, j] != board[i + 1, j])
+                        {
+                            count++;
+                        }
+                    }
+                }
+            }
+
+            if (count >= 12)
+            {
+                if (isBoardFull())
+                {
+                    return true;
+                }
+                return false;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public string GetScore()
+        {
+            return score.ToString();
         }
 
         public void PerformDown()
@@ -82,6 +150,7 @@ namespace twozerofoureight
                     if (j > 0 && buffer[j] != 0 && buffer[j] == buffer[j - 1])
                     {
                         buffer[j - 1] *= 2;
+                        score += buffer[j - 1];
                         buffer[j] = 0;
                     }
                 }
@@ -134,6 +203,7 @@ namespace twozerofoureight
                     if (j > 0 && buffer[j] != 0 && buffer[j] == buffer[j - 1])
                     {
                         buffer[j - 1] *= 2;
+                        score += buffer[j - 1];
                         buffer[j] = 0;
                     }
                 }
@@ -188,6 +258,7 @@ namespace twozerofoureight
                     if (j > 0 && buffer[j] != 0 && buffer[j] == buffer[j - 1])
                     {
                         buffer[j - 1] *= 2;
+                        score += buffer[j - 1];
                         buffer[j] = 0;
                     }
                 }
@@ -239,6 +310,7 @@ namespace twozerofoureight
                     if (j > 0 && buffer[j] != 0 && buffer[j] == buffer[j - 1])
                     {
                         buffer[j - 1] *= 2;
+                        score += buffer[j - 1];
                         buffer[j] = 0;
                     }
                 }
